@@ -1,6 +1,6 @@
 from __future__ import print_function
 import networkx as nx   # NetworkX provides the graph functionality we need.
-import reduce_network   # Main module.
+import dm_graphs        # Main module.
 import toy_model        # Provides toy data to work with.
 
 # Get the data. In this case, we use a model based on tags from Freesound.org
@@ -16,18 +16,18 @@ G.add_weighted_edges_from(gen)
 # But! Weights correspond to distance rather than similarity!
 # We invert the graph using the invert_weights function.
 # Note that this function just takes 1-weight as the new weight.
-G = reduce_network.invert_weights(G)
+G = dm_graphs.invert_weights(G)
 
 # Get the main connected component.
-MG  = reduce_network.main_graph(G)
+MG  = dm_graphs.main_graph(G)
 
 # Reduce the network using Top-N reduction (default, n=5).
-TOPN = reduce_network.graph_reduce(MG)
+TOPN = dm_graphs.graph_reduce(MG)
 
 # Reduce the network using the MST-pathfinder algorithm.
 # This takes quite a long time for larger graphs, but is very fast for small ones.
 # So we reduce the top-N network further.
-MST  = reduce_network.MST_pathfinder(TOPN)
+MST  = dm_graphs.MST_pathfinder(TOPN)
 
 # Writing the graph to a file:
 # ------------------------------------------------------------------------------
