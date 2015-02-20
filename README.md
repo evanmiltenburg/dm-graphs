@@ -1,6 +1,6 @@
 # dm-graphs
 
-The scripts in `dm_graphs.py` provide a way to explore the relationships between words in a distributional model. It relies on the `NetworkX` package.
+The scripts in `dm_graphs.py` provide a way to explore the relationships between words in a distributional model. It relies on the `NetworkX` package. Please see the paper for more context.
 
 ## Basic usage
 The file `example.py` shows how to use the `dm_graphs` module. It initializes a generator (based on the model in `toy_model.py`) that produces tuples `(u,v,w)` corresponding to edges between `u` and `v` with weight `w`. The weight in this case is the cosine distance between `u` and `v`.
