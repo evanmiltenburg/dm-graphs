@@ -90,24 +90,41 @@ def partition_by_group(partition):
 
 def graph_reduce(G,n=5,theta=0.5,
                     top_n=True,
+                    mutual=False,
                     threshold=False,
                     return_only_main=True):
     """Reduce the graph through either (or both) of two similarity measures:
         - An edge can only connect A and B iff B is in A's top-n similar nodes,
         or vice versa.
         - An edge can only connect A and B iff the weight is sufficient."""
+    if mutual:
+        NG        = nx.Graph()            # generate a new graph
+        topn_dict = dict()                # and a dict to keep top-n neighbors
+        for node in G:                    # for each node create a sorted list of
+            l = sorted( G.neighbors(node),# similar nodes.
+                    key=lambda x:G[node][x]['weight'],
+                    reverse=True)[:n]     # get first n items
+            topn_dict[node] = set(l)      # and add it to the dictionary
+        # select the edges that match the criteria.
+        to_add = [(a,b) for a,b in G.edges() if     a in topn_dict[b]
+                                                and b in topn_dict[a]]
+        # and add them to the new graph.
+        NG.add_weighted_edges_from(G[a][b]['weight'] for a,b in to_add)
     
-    if top_n:                             # if we are using the top-n measure
+    # Proceed with the top-n condition, if mutual is False.
+    
+    elif top_n:                           # if we are using the top-n measure
         NG = nx.Graph()                   # generate a new graph
         for node in G:                    # and for each node a sorted list of
-            l = sorted( G[node].keys(),   # similar nodes.
+            l = sorted( G.neighbors(node),# similar nodes.
                     key=lambda x:G[node][x]['weight'],
                     reverse=True)[:n]     # first n items
             
             # And add the top-n similar edges to the graph!
             NG.add_weighted_edges_from((node,x,G[node][x]['weight']) for x in l)
-    else:   # Else just create a copy of G, that we can prune using the threshold
-            # measure.
+    
+    # Else just create a copy of G, that we can prune using the threshold measure
+    else:
         NG = G.copy()
     
     # Code for the threshold measure:
