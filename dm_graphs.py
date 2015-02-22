@@ -109,7 +109,7 @@ def graph_reduce(G,n=5,theta=0.5,
         to_add = [(a,b) for a,b in G.edges() if     a in topn_dict[b]
                                                 and b in topn_dict[a]]
         # and add them to the new graph.
-        NG.add_weighted_edges_from(G[a][b]['weight'] for a,b in to_add)
+        NG.add_weighted_edges_from((a,b,G[a][b]['weight']) for a,b in to_add)
     
     # Proceed with the top-n condition, if mutual is False.
     
