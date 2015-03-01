@@ -169,3 +169,86 @@ def MST_pathfinder(G):
             clusters = {node:cluster_1 if i==cluster_2 else i
                         for node,i in clusters.iteritems()}
     return NG
+
+
+def maxmax_transform(G):
+    """Implements phase 1 of the MaxMax algorithm by Hope & Keller (2013).
+    Returns a directed graph where for all edges (v,u) v is the maximal vertex of u."""
+    
+    index = dict()
+    NG    = nx.DiGraph()
+    
+    def update_edges(item,neighbor,weight):
+        "Update the edge index for item."
+        l = index.get(item,[])
+        if len(l) == 0:
+            index[item] = [(neighbor,weight)]
+        else:
+            current_weight = index[item][0][1]
+            if weight > current_weight:
+                index[item] = [(neighbor,weight)]
+            elif weight == current_weight:
+                index[item].append((neighbor,weight))
+            else:
+                pass # do nothing
+
+    # Go through all edges, and establish maximal vertices for each vertex.
+    for u,v in G.edges():
+        w = G[u][v]['weight']
+        update_edges(u,v,w)
+        update_edges(v,u,w)
+    
+    # Add edges to the new directed graph.
+    NG.add_edges_from((t[0],u) for u,l in index.items() for t in l)
+    
+    return NG
+
+def maxmax_clusters(G):
+    """Get clusters based on directed MaxMax graph.
+    
+    My own twist to the MaxMax algorithm, but still in the MaxMax spirit.
+    I do not use root marking, but say a node X is a root iff X has no parents.
+    
+    Hope & Keller do something similar:
+    for node in G.nodes():
+        if node is marked ROOT:
+            mark children of node NOT-ROOT
+    
+    But this means that with this structure, if we start with B and all nodes are
+    marked ROOT, then D is NOT-ROOT. This means that F and G will not be marked
+    NOT-ROOT:
+    
+                 A
+               B   C
+             D
+           F   G
+    
+    """
+    
+    # First determine which nodes are roots. I.e. which nodes aren't children.
+    nodes      = set(G.nodes())
+    children   = set(successor for node in G for successor in G.successors(node))
+    roots      = nodes-children
+    
+    # Function to create clusters. It takes a node and returns a set containing
+    # that node and all its successors.
+    cluster    = lambda node: {node} | set(nx.bfs_successors(G,node))
+    
+    # The results will be returned in the form of a dictionary.
+    # One entry contains the maximal clusters, i.e. clusters where the root is
+    # an actual root.
+    #
+    # The other contains all possible clusters. This is necessary because the
+    # graph might be circular, and then there might not be a root.
+    #
+    # Because of this, it is a nontrivial task to automatically determine the
+    # largest cluster for each sense.
+    results    = {'maximal_clusters':[],'clusters':[]}
+    
+    # This is the loop where we generate all the clusters:
+    for node in nodes:
+        s = cluster(node)
+        results['clusters'].append(s)
+        if node in roots:
+            results['maximal_clusters'].append(s)
+    return results
