@@ -12,6 +12,9 @@ The folder `googlenews-demo` contains some output files (`.gexf`) that you can o
 **Main functions**
 * `MST_pathfinder()` is an implementation of MST-pathfinder algorithm (Quirin et al. 2008).
 * `graph_reduce()` reduces the graph by only including the edges that link each node to its top-n similar neighbors. It also has an optional restriction such that every edge should have a weight above a particular threshold.
+* `maxmax_transform()` is an implementation of phase 1 of the MaxMax algorithm (Hope & Keller 2013).
+It transforms a weighted undirected graph into a directed graph.
+* `maxmax_clusters()` is a function inspired by the MaxMax algorithm that produces soft clusters of words. Clusters should correspond to word senses.
 
 **Graph analysis**
 * `main_graph()` returns the largest connected component.
