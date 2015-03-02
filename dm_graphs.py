@@ -207,9 +207,8 @@ def maxmax_clusters(G):
     """Get clusters based on directed MaxMax graph.
     
     My own twist to the MaxMax algorithm, but still in the MaxMax spirit.
-    I do not use root marking, but say a node X is a root iff X has no parents.
     
-    Hope & Keller do something similar:
+    Hope & Keller do this:
     for node in G.nodes():
         if node is marked ROOT:
             mark children of node NOT-ROOT
@@ -223,32 +222,22 @@ def maxmax_clusters(G):
              D
            F   G
     
-    """
-    
-    # First determine which nodes are roots. I.e. which nodes aren't children.
-    nodes      = set(G.nodes())
-    children   = set(successor for node in G for successor in G.successors(node))
-    roots      = nodes-children
+    I just return a list containing all maximal QSC subgraphs."""
     
     # Function to create clusters. It takes a node and returns a set containing
     # that node and all its successors.
     cluster    = lambda node: {node} | set(nx.bfs_successors(G,node))
     
-    # The results will be returned in the form of a dictionary.
-    # One entry contains the maximal clusters, i.e. clusters where the root is
-    # an actual root.
-    #
-    # The other contains all possible clusters. This is necessary because the
-    # graph might be circular, and then there might not be a root.
-    #
-    # Because of this, it is a nontrivial task to automatically determine the
-    # largest cluster for each sense.
-    results    = {'maximal_clusters':[],'clusters':[]}
+    # Get and sort all clusters by size:
+    clusters   = sorted([cluster(node) for node in G.nodes()],key=len,reverse=True)
     
-    # This is the loop where we generate all the clusters:
-    for node in nodes:
-        s = cluster(node)
-        results['clusters'].append(s)
-        if node in roots:
-            results['maximal_clusters'].append(s)
+    # Create list to output results:
+    results    = []
+    
+    # Loop through the ordered set of clusters, starting with the largest.
+    # Add cluster to the results iff it is not a subset of a cluster already in
+    # the results.
+    for c in clusters:
+        if not(True in [c.issubset(s_i) for s_i in results]):
+            results.append(c)
     return results
