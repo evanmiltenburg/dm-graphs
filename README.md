@@ -1,6 +1,6 @@
 # dm-graphs
 
-The scripts in `dm_graphs.py` provide a way to explore the relationships between words in a distributional model. It relies on the `NetworkX` package. Please see the paper for more context.
+The scripts in `dm_graphs.py` provide a way to explore the relationships between words in a distributional model. It relies on the `NetworkX` package. Please see the paper for more context. For an interactive demo, go [here](http://kyoto.let.vu.nl/~miltenburg/animals/).
 
 ## Basic usage
 The file `googlenews.py` shows how to use the `dm_graphs` module. Just create an iterable that contains tuples `(u,v,w)` corresponding to edges between `u` and `v` with weight `w`. The weight in this case is the cosine similarity between `u` and `v`. Then create a graph, and fill it with the data. The rest of the code shows how to make the network easier to visualize by using `dm_graphs.graph_reduce(G)` and `dm_graphs.MST_pathfinder(G)`. These return a sparser version of the network.
