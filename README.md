@@ -4,6 +4,7 @@ The scripts in `dm_graphs.py` provide a way to explore the relationships between
 
 This work was presented as a poster at the [ADS workshop](https://sites.google.com/site/iwcs2015ads/). Bibtex:
 
+```
   @unpublished{miltenburg2015exploring,
   	Author = {Emiel van Miltenburg},
   	Date-Added = {2016-07-17 09:22:11 +0000},
@@ -11,7 +12,7 @@ This work was presented as a poster at the [ADS workshop](https://sites.google.c
   	Note = {Presented as a poster at the Advances in Distributional Semantics workshop, collocated with IWCS. GitHub page: \url{https://github.com/evanmiltenburg/dm-graphs}},
   	Title = {Exploring and visualizing distributional models using graphs},
   	Year = {2015}}
-
+```
 
 ## Basic usage
 The file `googlenews.py` shows how to use the `dm_graphs` module. Just create an iterable that contains tuples `(u,v,w)` corresponding to edges between `u` and `v` with weight `w`. The weight in this case is the cosine similarity between `u` and `v`. Then create a graph, and fill it with the data. The rest of the code shows how to make the network easier to visualize by using `dm_graphs.graph_reduce(G)` and `dm_graphs.MST_pathfinder(G)`. These return a sparser version of the network.
